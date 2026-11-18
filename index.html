@@ -1059,7 +1059,7 @@
     const state = {
       activeMainTab: 'availability',
       isAdmin: false,
-      adminPasscode: 'slsc2026',
+      adminPasscode: 'slsc2027', // Secured default passcode
       selectedBungalowId: 'diyathalawa',
       calendarBungalowId: 'ALL',
       selectedDate: todayStr,
@@ -1311,7 +1311,7 @@
     window.submitAdminPasscode = function (e) {
       e.preventDefault();
       const entered = document.getElementById('adminPasscodeInput').value.trim();
-      if (entered === state.adminPasscode || entered === 'slsc2026') {
+      if (entered === state.adminPasscode) {
         window.closeModal('adminPasscodeModal');
         setAdminMode(true, true);
       } else {
@@ -2363,7 +2363,8 @@
     function checkUrlAdminParam() {
       const params = new URLSearchParams(window.location.search);
       const adminParam = params.get('admin');
-      if (adminParam && (adminParam === state.adminPasscode || adminParam === 'slsc')) {
+      // Strictly require exact match with the current adminPasscode only
+      if (adminParam && adminParam === state.adminPasscode) {
         setAdminMode(true, false);
       }
     }
@@ -2485,6 +2486,12 @@
           for (const person of INITIAL_PERSONNEL) {
             await setDoc(doc(personnelCol, person.id), person);
           }
+        }
+
+        const appSettingsCol = collection(state.db, 'artifacts', state.appId, 'public', 'data', 'settings');
+        const settingsSnap = await getDocs(appSettingsCol);
+        if (settingsSnap.empty) {
+          await setDoc(doc(appSettingsCol, 'adminConfig'), { passcode: 'slsc2027' });
         }
 
         onSnapshot(personnelCol, (snapshot) => {
