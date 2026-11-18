@@ -141,6 +141,13 @@
             <span>4. Personnel Directory</span>
             <span id="personnelCountBadge" class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-white">14</span>
           </button>
+
+          <button id="mainTabBtn_tariffs" onclick="switchMainTab('tariffs')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white hover:bg-white/10">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>5. Bungalow Tariffs & Info</span>
+          </button>
         </div>
 
         <!-- Admin Quick Action Buttons in Nav Bar -->
@@ -570,6 +577,65 @@
       </section>
     </div>
 
+    <!-- =================================================================== -->
+    <!-- TAB 5: BUNGALOW TARIFFS & OFFICIAL PRICING TABLE                   -->
+    <!-- =================================================================== -->
+    <div id="tabPanel_tariffs" class="hidden space-y-5">
+      <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+        <div class="bg-slsc-navy text-white px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-slsc-gold">Official Regimental Tariff Guide</span>
+            <h2 class="text-base sm:text-lg font-bold">Holiday Bungalow Rates & Facilities (Official Tariff Schedule)</h2>
+          </div>
+          <div id="tariffAdminActionWrap" class="hidden">
+            <button onclick="openTariffEditModal()" class="px-3.5 py-1.5 rounded-xl bg-slsc-gold text-slsc-navy text-xs font-bold hover:bg-yellow-400 transition cursor-pointer">
+              ✏️ Edit Tariff Rates
+            </button>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-5 space-y-4">
+          <div class="bg-blue-50 border border-blue-200 rounded-xl p-3.5 text-xs text-slsc-navy flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <p class="font-bold">Official Booking Rates across all 6 SLSC Holiday Bungalows.</p>
+              <p class="text-slate-600 mt-0.5">Rates are categorized for SLSC Personnel, Non-SLSC Armed Services, and Civilian Guests.</p>
+            </div>
+            <!-- Bungalow Selector Filter for Tariff Table -->
+            <div class="flex items-center gap-2 shrink-0">
+              <label class="font-bold text-slate-700">Filter Bungalow:</label>
+              <select id="tariffBungalowFilter" onchange="renderTariffTable()" class="text-xs bg-white border border-slate-300 rounded-lg px-3 py-1.5 font-semibold text-slsc-navy focus:outline-none focus:ring-2 focus:ring-slsc-blue">
+                <option value="ALL">All 6 Bungalows</option>
+                <option value="Anuradhapura">1. Anuradhapura (4 SLSC)</option>
+                <option value="Diyathalawa">2. Diyathalawa (7 SLSC)</option>
+                <option value="Minneriya">3. Minneriya (2(V) SLSC)</option>
+                <option value="Kandy">4. Kandy (Signal School)</option>
+                <option value="Pereragama">5. Pereragama (5 SLSC)</option>
+                <option value="Kilinochchi">6. Kilinochchi (1 SLSC)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto border border-slate-200 rounded-xl">
+            <table class="w-full text-left border-collapse text-xs sm:text-sm min-w-[900px]">
+              <thead>
+                <tr class="bg-slate-100 text-[11px] font-bold uppercase text-slate-700 border-b border-slate-300">
+                  <th class="py-3 px-3 text-center w-12">No</th>
+                  <th class="py-3 px-3 w-44">Administrative Unit</th>
+                  <th class="py-3 px-4">Bungalow / Floor / Unit / Facility Description</th>
+                  <th class="py-3 px-3 text-right">SLSC Serving & Retired (Rs.)</th>
+                  <th class="py-3 px-3 text-right">Non-SLSC Services (Rs.)</th>
+                  <th class="py-3 px-3 text-right">Civil Guests (Rs.)</th>
+                </tr>
+              </thead>
+              <tbody id="tariffsTableBody" class="divide-y divide-slate-200">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
   </main>
 
   <!-- FOOTER -->
@@ -817,6 +883,26 @@
     </div>
   </div>
 
+  <!-- MODAL 6: TARIFF EDIT MODAL (ADMIN) -->
+  <div id="tariffEditModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="bg-slsc-navy text-white px-5 py-4 flex items-center justify-between">
+        <h3 class="font-bold text-base">Edit Tariff Rates</h3>
+        <button onclick="closeModal('tariffEditModal')" class="text-slate-300 hover:text-white p-1 cursor-pointer">✕</button>
+      </div>
+      <form onsubmit="saveTariffRates(event)" class="p-5 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
+        <p class="text-slate-600">Modify the official nightly rates below. Changes sync live.</p>
+        <div id="tariffEditRowsContainer" class="space-y-3">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-3 border-t">
+          <button type="button" onclick="closeModal('tariffEditModal')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold cursor-pointer">Cancel</button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-emerald-600 text-white font-bold cursor-pointer">Save Rates</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
 
@@ -839,8 +925,37 @@
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     // -----------------------------------------------------------------------
+    // OFFICIAL TARIFF RATES DATA (TRANSLATED TO ENGLISH & ORGANIZED)
+    // -----------------------------------------------------------------------
+    const INITIAL_TARIFFS = [
+      { id: 't1', no: '1', filterKey: 'Anuradhapura', unit: '4 SLSC (Anuradhapura)', item: 'Grade I Holiday Bungalow (3 x AC Rooms)', slsc: '3,000.00', other: '6,000.00', civil: '12,000.00' },
+      { id: 't2', no: '1', filterKey: 'Anuradhapura', unit: '4 SLSC (Anuradhapura)', item: 'Grade II Officer / ORs Bungalow (2 x AC, 1 x Non-AC)', slsc: '2,000.00', other: '4,000.00', civil: '8,000.00' },
+      { id: 't3', no: '1', filterKey: 'Anuradhapura', unit: '4 SLSC (Anuradhapura)', item: 'Dormitory (7 Double Beds - 14 Persons)', slsc: '2,500.00', other: '5,000.00', civil: '8,500.00' },
+      
+      { id: 't4', no: '2', filterKey: 'Diyathalawa', unit: '7 SLSC (Diyathalawa)', item: 'Ground Floor Hall & Rooms (2 Rooms / 16 Persons)', slsc: '5,000.00', other: '10,000.00', civil: '15,000.00' },
+      { id: 't5', no: '2', filterKey: 'Diyathalawa', unit: '7 SLSC (Diyathalawa)', item: 'First Floor (3 Rooms / 10 Persons)', slsc: '3,000.00', other: '6,000.00', civil: '15,000.00' },
+      { id: 't6', no: '2', filterKey: 'Diyathalawa', unit: '7 SLSC (Diyathalawa)', item: 'Second Floor - Function Hall (Up to 50 persons)', slsc: '15,000.00', other: '30,000.00', civil: '50,000.00' },
+      { id: 't7', no: '2', filterKey: 'Diyathalawa', unit: '7 SLSC (Diyathalawa)', item: 'Second Floor - Function Hall (Per extra person above 50)', slsc: '250.00', other: '500.00', civil: '750.00' },
+      { id: 't8', no: '2', filterKey: 'Diyathalawa', unit: '7 SLSC (Diyathalawa)', item: 'Third Floor Suite (Signal Officers - Lt Col & above / Brig above)', slsc: '5,000.00', other: '10,000.00', civil: '20,000.00' },
+      { id: 't9', no: '2', filterKey: 'Diyathalawa', unit: '7 SLSC (Diyathalawa)', item: 'Billiard Table Facility', slsc: '500.00', other: '500.00', civil: '500.00' },
+      { id: 't10', no: '2', filterKey: 'Diyathalawa', unit: '7 SLSC (Diyathalawa)', item: 'Parabolic Hut Facility', slsc: '4,000.00', other: '8,000.00', civil: '10,000.00' },
+
+      { id: 't11', no: '3', filterKey: 'Minneriya', unit: '2(V) SLSC (Minneriya)', item: 'Miridiya Pawana (Officers Only - 3 Rooms)', slsc: '5,000.00', other: '10,000.00', civil: '25,000.00' },
+
+      { id: 't12', no: '4', filterKey: 'Kandy', unit: 'Signal School (Kandy)', item: 'Knuckles View Bungalow (2 Rooms)', slsc: '3,000.00', other: '6,000.00', civil: '8,000.00' },
+      { id: 't13', no: '4', filterKey: 'Kandy', unit: 'Signal School (Kandy)', item: 'Breezy Cottage (Lt Col & above - 1 Room)', slsc: '2,000.00', other: '4,000.00', civil: '7,500.00' },
+
+      { id: 't14', no: '5', filterKey: 'Pereragama', unit: '5 SLSC (Pereragama)', item: 'Pool Site Rooms (2 Rooms)', slsc: '1,500.00', other: '2,500.00', civil: '3,000.00' },
+      { id: 't15', no: '5', filterKey: 'Pereragama', unit: '5 SLSC (Pereragama)', item: 'Cabanas (3 x 4 = 12 Units)', slsc: '3,000.00', other: '5,000.00', civil: '7,500.00' },
+      { id: 't16', no: '5', filterKey: 'Pereragama', unit: '5 SLSC (Pereragama)', item: 'Swimming Pool Area (For small groups)', slsc: '4,000.00', other: '7,000.00', civil: '15,000.00' },
+      { id: 't17', no: '5', filterKey: 'Pereragama', unit: '5 SLSC (Pereragama)', item: 'Swimming Pool Area (For large groups above 20)', slsc: '5,000.00', other: '9,000.00', civil: '20,000.00' },
+      { id: 't18', no: '5', filterKey: 'Pereragama', unit: '5 SLSC (Pereragama)', item: 'Swimwear Usage Fee (For Civilian Guests)', slsc: '200.00', other: '200.00', civil: '200.00' },
+
+      { id: 't19', no: '6', filterKey: 'Kilinochchi', unit: '1 SLSC (Kilinochchi)', item: 'Cabana (Per Unit)', slsc: '1,500.00', other: '2,500.00', civil: '3,500.00' }
+    ];
+
+    // -----------------------------------------------------------------------
     // 1. EXACT 6 MAIN BUNGALOWS & SUB-UNITS CONFIGURATION
-    //    allowIndividualRooms: false = Whole floor/bungalow must be booked together
     // -----------------------------------------------------------------------
     const BUNGALOWS = [
       {
@@ -849,7 +964,7 @@
         name: 'Mercury House - Diyathalawa',
         location: 'Diyathalawa',
         units: [
-          { id: 'diya_ground', name: 'Ground Floor (Dormitory)', capacity: '20 Occupants (Dormitory)', ac: 'Non A/C', allowIndividualRooms: false, rooms: [{ id: 'dorm', name: 'Dormitory (20 Beds)', type: 'Non A/C' }] },
+          { id: 'diya_ground', name: 'Ground Floor (Dormitory)', capacity: '2 Rooms (16 Persons)', ac: 'Non A/C', allowIndividualRooms: false, rooms: [{ id: 'dorm', name: '2 Rooms (16 Persons)', type: 'Non A/C' }] },
           { id: 'diya_first', name: 'First Floor (Complete Floor)', capacity: '03 Rooms (Whole Floor)', ac: '2 x A/C, 1 x Non A/C', allowIndividualRooms: false, rooms: [{ id: 'r1', name: 'Room 1', type: 'A/C' }, { id: 'r2', name: 'Room 2', type: 'A/C' }, { id: 'r3', name: 'Room 3', type: 'Non A/C' }] },
           { id: 'diya_second', name: 'Second Floor - For Functions', capacity: 'Hall (50+ persons)', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'hall', name: 'Function Hall', type: 'A/C' }] },
           { id: 'diya_suite', name: 'The Suite (3rd Floor)', capacity: '01 Luxury Suite', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'suite', name: 'Luxury Suite', type: 'A/C' }] }
@@ -873,7 +988,7 @@
         units: [
           { id: 'anura_new', name: 'New Bungalow (Grade I & above Officers)', capacity: '03 Rooms (Complete Bungalow)', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'r1', name: 'Room 1', type: 'A/C' }, { id: 'r2', name: 'Room 2', type: 'A/C' }, { id: 'r3', name: 'Room 3', type: 'A/C' }] },
           { id: 'anura_old', name: 'Old Bungalow (Grade II & below Officers / ORs)', capacity: '03 Rooms (Complete Bungalow)', ac: '2 x A/C, 1 x Non A/C', allowIndividualRooms: false, rooms: [{ id: 'r1', name: 'Room 1', type: 'A/C' }, { id: 'r2', name: 'Room 2', type: 'A/C' }, { id: 'r3', name: 'Room 3', type: 'Non A/C' }] },
-          { id: 'anura_dorm', name: 'Dormitory (Officers & ORs)', capacity: '14 Beds', ac: 'Non A/C', allowIndividualRooms: false, rooms: [{ id: 'dorm', name: 'Dormitory (14 Beds)', type: 'Non A/C' }] }
+          { id: 'anura_dorm', name: 'Dormitory (Officers & ORs)', capacity: '7 Double Beds (14 Persons)', ac: 'Non A/C', allowIndividualRooms: false, rooms: [{ id: 'dorm', name: '7 Double Beds (14 Persons)', type: 'Non A/C' }] }
         ]
       },
       {
@@ -900,11 +1015,11 @@
         name: 'Mercury Club House - Padukka',
         location: 'Padukka',
         units: [
-          { id: 'padu_pool_1', name: 'Pool Site Room 1', capacity: '01 Room (Rate per room)', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'room', name: 'Pool Site Room 1', type: 'A/C' }] },
-          { id: 'padu_pool_2', name: 'Pool Site Room 2', capacity: '01 Room (Rate per room)', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'room', name: 'Pool Site Room 2', type: 'A/C' }] },
-          { id: 'padu_cabana_1', name: 'Cabana 1', capacity: '01 Room (Rate per room)', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'cabana', name: 'Cabana 1', type: 'A/C' }] },
-          { id: 'padu_cabana_2', name: 'Cabana 2', capacity: '01 Room (Rate per room)', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'cabana', name: 'Cabana 2', type: 'A/C' }] },
-          { id: 'padu_cabana_3', name: 'Cabana 3', capacity: '01 Room (Rate per room)', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'cabana', name: 'Cabana 3', type: 'A/C' }] }
+          { id: 'padu_pool_1', name: 'Pool Site Room 1', capacity: '01 Room', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'room', name: 'Pool Site Room 1', type: 'A/C' }] },
+          { id: 'padu_pool_2', name: 'Pool Site Room 2', capacity: '01 Room', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'room', name: 'Pool Site Room 2', type: 'A/C' }] },
+          { id: 'padu_cabana_1', name: 'Cabana 1', capacity: '01 Room', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'cabana', name: 'Cabana 1', type: 'A/C' }] },
+          { id: 'padu_cabana_2', name: 'Cabana 2', capacity: '01 Room', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'cabana', name: 'Cabana 2', type: 'A/C' }] },
+          { id: 'padu_cabana_3', name: 'Cabana 3', capacity: '01 Room', ac: 'A/C', allowIndividualRooms: false, rooms: [{ id: 'cabana', name: 'Cabana 3', type: 'A/C' }] }
         ]
       }
     ];
@@ -952,6 +1067,7 @@
       calendarMonth: new Date().getMonth(),
       bookings: [],
       personnel: [...INITIAL_PERSONNEL],
+      tariffs: [...INITIAL_TARIFFS],
       db: null,
       auth: null,
       user: null,
@@ -1075,7 +1191,7 @@
 
     window.switchMainTab = function (tabName) {
       state.activeMainTab = tabName;
-      const allTabs = ['availability', 'schedule', 'calendar', 'personnel'];
+      const allTabs = ['availability', 'schedule', 'calendar', 'personnel', 'tariffs'];
 
       allTabs.forEach(t => {
         const panel = document.getElementById(`tabPanel_${t}`);
@@ -1100,6 +1216,78 @@
         renderCalendar();
       } else if (tabName === 'personnel') {
         renderPersonnelDirectoryTable();
+      } else if (tabName === 'tariffs') {
+        renderTariffTable();
+      }
+    };
+
+    window.renderTariffTable = function () {
+      const tbody = document.getElementById('tariffsTableBody');
+      if (!tbody) return;
+
+      const filterVal = document.getElementById('tariffBungalowFilter')?.value || 'ALL';
+      const filtered = state.tariffs.filter(t => filterVal === 'ALL' || t.filterKey === filterVal);
+
+      tbody.innerHTML = filtered.map(t => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-2.5 px-3 text-center font-bold text-slate-700">${t.no}</td>
+          <td class="py-2.5 px-3 font-semibold text-slsc-navy">${t.unit}</td>
+          <td class="py-2.5 px-4 font-medium text-slate-800">${t.item}</td>
+          <td class="py-2.5 px-3 text-right font-bold text-emerald-700">Rs. ${t.slsc}</td>
+          <td class="py-2.5 px-3 text-right font-semibold text-blue-800">Rs. ${t.other}</td>
+          <td class="py-2.5 px-3 text-right font-semibold text-slate-700">Rs. ${t.civil}</td>
+        </tr>
+      `).join('');
+    };
+
+    window.openTariffEditModal = function () {
+      if (!state.isAdmin) return;
+      const container = document.getElementById('tariffEditRowsContainer');
+      container.innerHTML = state.tariffs.map((t, idx) => `
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-2">
+          <div class="font-bold text-slsc-navy">${t.unit} — ${t.item}</div>
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600">SLSC Rate (Rs.)</label>
+              <input type="text" id="t_slsc_${idx}" value="${t.slsc}" class="w-full px-2 py-1.5 rounded border bg-white font-semibold" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600">Other Services (Rs.)</label>
+              <input type="text" id="t_other_${idx}" value="${t.other}" class="w-full px-2 py-1.5 rounded border bg-white font-semibold" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600">Civilian Rate (Rs.)</label>
+              <input type="text" id="t_civil_${idx}" value="${t.civil}" class="w-full px-2 py-1.5 rounded border bg-white font-semibold" />
+            </div>
+          </div>
+        </div>
+      `).join('');
+      window.openModal('tariffEditModal');
+    };
+
+    window.saveTariffRates = async function (e) {
+      e.preventDefault();
+      if (!state.isAdmin) return;
+
+      state.tariffs.forEach((t, idx) => {
+        t.slsc = document.getElementById(`t_slsc_${idx}`).value.trim();
+        t.other = document.getElementById(`t_other_${idx}`).value.trim();
+        t.civil = document.getElementById(`t_civil_${idx}`).value.trim();
+      });
+
+      try {
+        if (state.db && state.user) {
+          const tariffCol = collection(state.db, 'artifacts', state.appId, 'public', 'data', 'tariffs');
+          await setDoc(doc(tariffCol, 'officialTariffs'), { items: state.tariffs });
+        }
+        window.closeModal('tariffEditModal');
+        renderTariffTable();
+        showToast('Tariff rates updated successfully!');
+      } catch (err) {
+        console.error('Save tariffs error:', err);
+        showToast('Updated locally.', 'warning');
+        window.closeModal('tariffEditModal');
+        renderTariffTable();
       }
     };
 
@@ -1267,8 +1455,8 @@
           statusPill = `<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-600">Completed</span>`;
         }
 
-        const roomNamesStr = (unit.allowIndividualRooms && bk.selectedRooms && unit.rooms)
-          ? unit.rooms.filter(r => bk.selectedRooms.includes(r.id)).map(r => r.name).join(', ')
+        const roomNamesStr = (u.allowIndividualRooms && bk.selectedRooms && u.rooms)
+          ? u.rooms.filter(r => bk.selectedRooms.includes(r.id)).map(r => r.name).join(', ')
           : 'Complete Floor / Unit';
 
         return `
@@ -1323,7 +1511,6 @@
       const container = document.getElementById('mixedRoomSelectorContainer');
       const checkboxesDiv = document.getElementById('mixedRoomCheckboxes');
 
-      // Only show individual room checkboxes if allowIndividualRooms is explicitly true
       if (!unit.allowIndividualRooms || !unit.rooms || unit.rooms.length <= 1) {
         container.classList.add('hidden');
         checkboxesDiv.innerHTML = '';
@@ -1375,9 +1562,6 @@
           </label>
         `;
       }).join('');
-
-      const availableCount = unit.rooms.filter(r => !bookedRoomIds.has(r.id)).length;
-      document.getElementById('mixedRoomAvailabilityNote').textContent = `${availableCount} of ${unit.rooms.length} rooms available`;
     }
 
     window.handleCheckInChange = function () {
@@ -1413,14 +1597,6 @@
       if (checkOut < checkIn) {
         warningBox.classList.remove('hidden');
         document.getElementById('conflictDetailsText').textContent = 'Check-Out date cannot be earlier than Check-In date.';
-        submitBtn.disabled = true;
-        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
-        return true;
-      }
-
-      if (unit.allowIndividualRooms && unit.rooms && unit.rooms.length > 1 && selectedRooms.length === 0) {
-        warningBox.classList.remove('hidden');
-        document.getElementById('conflictDetailsText').textContent = 'Please select at least one room (A/C or Non A/C) to book.';
         submitBtn.disabled = true;
         submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
         return true;
@@ -1472,16 +1648,12 @@
       const clearBtn = document.getElementById('clearSelectedPersonBtn');
       const q = (queryText || '').toLowerCase().trim();
 
-      if (q.length > 0) {
-        clearBtn.classList.remove('hidden');
-      } else {
-        clearBtn.classList.add('hidden');
-      }
+      if (q.length > 0) clearBtn.classList.remove('hidden');
+      else clearBtn.classList.add('hidden');
 
       const matches = state.personnel.filter(p => {
         if (!q) return true;
-        const combined = `${p.offrNo} ${p.rank} ${p.name} ${p.unit}`.toLowerCase();
-        return combined.includes(q);
+        return `${p.offrNo} ${p.rank} ${p.name} ${p.unit}`.toLowerCase().includes(q);
       });
 
       if (matches.length === 0) {
@@ -1524,12 +1696,7 @@
 
       const bSelect = document.getElementById('bookingBungalowSelect');
       bSelect.innerHTML = BUNGALOWS.map(b => `<option value="${b.id}">${b.number}. ${b.name}</option>`).join('');
-      
-      if (preselectBungalowId) {
-        bSelect.value = preselectBungalowId;
-      } else {
-        bSelect.value = state.selectedBungalowId;
-      }
+      bSelect.value = preselectBungalowId || state.selectedBungalowId;
 
       window.populateBookingUnitsDropdown(preselectUnitId);
 
@@ -2190,6 +2357,7 @@
       renderCalendar();
       renderBookingsList();
       renderPersonnelDirectoryTable();
+      renderTariffTable();
     }
 
     function checkUrlAdminParam() {
@@ -2213,6 +2381,7 @@
       const dirActionHeader = document.getElementById('directoryActionHeader');
       const dirSubSingle = document.getElementById('dirSubBtn_single');
       const dirSubBulk = document.getElementById('dirSubBtn_bulk');
+      const tariffActionWrap = document.getElementById('tariffAdminActionWrap');
 
       if (enable) {
         modeBadge.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/20 text-emerald-200 border border-emerald-400/40 flex items-center gap-1.5';
@@ -2227,8 +2396,9 @@
         dirActionHeader?.classList.remove('hidden');
         dirSubSingle?.classList.remove('hidden');
         dirSubBulk?.classList.remove('hidden');
+        tariffActionWrap?.classList.remove('hidden');
         updateSettingsModalLinks();
-        if (notify) showToast('Admin Mode unlocked. You can now add and edit bookings.');
+        if (notify) showToast('Admin Mode unlocked. You can now add and edit bookings & tariffs.');
       } else {
         modeBadge.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 text-slate-200 border border-white/15 flex items-center gap-1.5';
         modeBadge.innerHTML = `<svg class="w-3.5 h-3.5 text-sky-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg><span>Viewer Mode (Read-Only)</span>`;
@@ -2242,6 +2412,7 @@
         dirActionHeader?.classList.add('hidden');
         dirSubSingle?.classList.add('hidden');
         dirSubBulk?.classList.add('hidden');
+        tariffActionWrap?.classList.add('hidden');
         window.switchPersonnelTab('list');
         if (notify) showToast('Switched to Viewer Mode (Read-Only).');
       }
@@ -2297,6 +2468,16 @@
             }
           });
         }, (err) => console.error('Settings sync error:', err));
+
+        const tariffCol = collection(state.db, 'artifacts', state.appId, 'public', 'data', 'tariffs');
+        onSnapshot(tariffCol, (snapshot) => {
+          snapshot.forEach(docSnap => {
+            if (docSnap.id === 'officialTariffs' && docSnap.data().items) {
+              state.tariffs = docSnap.data().items;
+              renderTariffTable();
+            }
+          });
+        }, (err) => console.error('Tariffs sync error:', err));
 
         const personnelCol = collection(state.db, 'artifacts', state.appId, 'public', 'data', 'personnel');
         const existingSnap = await getDocs(personnelCol);
@@ -2360,6 +2541,7 @@
       checkUrlAdminParam();
       window.selectBungalow('diyathalawa');
       window.switchMainTab('availability');
+      renderTariffTable();
 
       initFirebase();
     });
