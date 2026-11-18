@@ -35,7 +35,6 @@
       font-family: 'Inter', sans-serif;
       background-color: #F1F5F9;
     }
-    /* Custom scrollbar for sleek UI */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -54,7 +53,6 @@
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
     }
-    /* Hide scrollbar on horizontal pill bars while keeping touch scroll */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
@@ -314,9 +312,12 @@
             </button>
 
             <!-- Admin Bulk Cleanup Action Button -->
-            <div id="scheduleAdminBulkActionWrap" class="hidden col-span-2 sm:col-span-auto">
+            <div id="scheduleAdminBulkActionWrap" class="hidden col-span-2 sm:col-span-auto flex items-center gap-1.5">
+              <button onclick="downloadBookingsCSV()" class="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-slsc-navy hover:bg-slsc-blue text-white text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer" title="Export Bookings to CSV">
+                <span>📥 Export CSV</span>
+              </button>
               <button onclick="openBulkDeleteModal()" class="w-full sm:w-auto px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold border border-rose-300 transition flex items-center justify-center gap-1 cursor-pointer">
-                <span>🗑️ Bulk Clean / Delete...</span>
+                <span>🗑️ Bulk Clean...</span>
               </button>
             </div>
           </div>
@@ -489,16 +490,19 @@
                 </svg>
               </div>
               <div id="directoryAdminAddBtnWrap" class="hidden flex items-center gap-2">
-                <button onclick="switchPersonnelTab('single', true)" class="px-3 py-1.5 rounded-xl bg-slsc-blue hover:bg-slsc-navy text-white text-xs font-bold shadow transition cursor-pointer">
-                  + Add Officer / OR
-                </button>
-                <button onclick="switchPersonnelTab('bulk')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition cursor-pointer">
-                  Paste Excel
-                </button>
-              </div>
-            </div>
+            <button onclick="switchPersonnelTab('single', true)" class="px-3 py-1.5 rounded-xl bg-slsc-blue hover:bg-slsc-navy text-white text-xs font-bold shadow transition cursor-pointer">
+              + Add Officer / OR
+            </button>
+            <button onclick="switchPersonnelTab('bulk')" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition cursor-pointer">
+              Paste Excel
+            </button>
+            <button onclick="downloadPersonnelCSV()" class="px-3 py-1.5 rounded-xl bg-slsc-navy hover:bg-slsc-blue text-white text-xs font-bold shadow transition flex items-center gap-1 cursor-pointer" title="Export Personnel Roster to CSV">
+              <span>📥 Export CSV</span>
+            </button>
+          </div>
+        </div>
 
-            <div class="overflow-x-auto border border-slate-200 rounded-xl">
+        <div class="overflow-x-auto border border-slate-200 rounded-xl">
               <table class="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr class="bg-slate-50 text-[10px] sm:text-[11px] font-bold uppercase text-slate-500 border-b border-slate-200">
@@ -865,67 +869,6 @@
             <button type="submit" class="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-bold hover:bg-slate-700 cursor-pointer">Update</button>
           </div>
         </form>
-
-        <!-- 4. GOOGLE SHEETS AUTO-SYNC & CSV EXPORT -->
-        <div class="pt-3 border-t border-slate-200 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <label class="block text-xs font-bold text-slate-700 uppercase">4. Google Sheets Auto-Sync</label>
-            <button type="button" onclick="openGoogleSheetGuideModal()" class="text-[11px] font-bold text-slsc-blue hover:underline cursor-pointer">How to Setup?</button>
-          </div>
-          <p class="text-[11px] text-slate-500">Paste your Google Apps Script Web App URL to automatically append new bookings & personnel to your Google Sheet.</p>
-          <form onsubmit="saveGoogleSheetWebhook(event)" class="flex gap-2">
-            <input type="url" id="googleSheetUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 text-xs" />
-            <button type="submit" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold cursor-pointer">Save</button>
-          </form>
-          <div class="pt-1 flex flex-wrap gap-2">
-            <button type="button" onclick="exportBookingsToCSV()" class="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
-              📊 Download Bookings CSV
-            </button>
-            <button type="button" onclick="exportPersonnelToCSV()" class="flex-1 py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold transition flex items-center justify-center gap-1 cursor-pointer">
-              📋 Download Officers CSV
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL 8: GOOGLE SHEETS SETUP GUIDE MODAL -->
-  <div id="googleSheetGuideModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
-      <div class="bg-slsc-navy text-white px-5 py-4 flex items-center justify-between">
-        <h3 class="font-bold text-base">Google Sheets Live Integration Guide</h3>
-        <button onclick="closeModal('googleSheetGuideModal')" class="text-slate-300 hover:text-white p-1 cursor-pointer">✕</button>
-      </div>
-      <div class="p-5 space-y-3 text-xs text-slate-700 max-h-[75vh] overflow-y-auto">
-        <p class="font-semibold text-slsc-navy">Follow these 4 easy steps to auto-sync bookings & officer details to Google Sheets:</p>
-        <ol class="list-decimal pl-4 space-y-1.5">
-          <li>Open a new <strong>Google Sheet</strong> in your Google Drive.</li>
-          <li>Click <strong>Extensions → Apps Script</strong> from the top menu.</li>
-          <li>Delete existing code, paste the script below, and click <strong>Save</strong>:</li>
-        </ol>
-        <div class="relative">
-          <textarea id="appsScriptCodeBox" readonly rows="8" class="w-full p-2.5 rounded-xl bg-slate-900 text-emerald-300 font-mono text-[10px]">function doPost(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var data = JSON.parse(e.postData.contents);
-  var sheetName = data.type === 'personnel' ? 'Officers' : 'Bookings';
-  var sheet = ss.getSheetByName(sheetName) || ss.insertSheet(sheetName);
-  if (sheet.getLastRow() === 0) {
-    if (data.type === 'personnel') {
-      sheet.appendRow(['Timestamp', 'Offr No', 'Rank', 'Name', 'Unit', 'Phone']);
-    } else {
-      sheet.appendRow(['Timestamp', 'Bungalow', 'Floor/Unit', 'Offr No', 'Rank', 'Officer Name', 'Unit', 'Check-In', 'Check-Out', 'Phone', 'Remarks']);
-    }
-  }
-  sheet.appendRow(data.row);
-  return ContentService.createTextOutput("OK");
-}</textarea>
-          <button type="button" onclick="copyInputText('appsScriptCodeBox')" class="mt-1.5 px-3 py-1.5 rounded-lg bg-slsc-blue text-white font-bold text-[11px] cursor-pointer">Copy Script Code</button>
-        </div>
-        <ol start="4" class="list-decimal pl-4 space-y-1.5">
-          <li>Click <strong>Deploy → New deployment</strong> → Select type <strong>Web app</strong> → Set <em>Who has access</em> to <strong>Anyone</strong> → Click <strong>Deploy</strong>.</li>
-          <li>Copy the generated <strong>Web app URL</strong> and paste it into the Admin Settings box!</li>
-        </ol>
       </div>
     </div>
   </div>
@@ -1160,7 +1103,6 @@
       activeMainTab: 'availability',
       isAdmin: false,
       adminPasscode: 'slsc2027', // Secured default passcode
-      googleSheetWebhookUrl: '', // Google Apps Script Web App URL
       selectedBungalowId: 'diyathalawa',
       calendarBungalowId: 'ALL',
       selectedDate: todayStr,
@@ -1903,23 +1845,6 @@
           showToast('Booking saved (Local Mode).');
         }
 
-        // Auto-sync to Google Sheets if configured
-        const bObj = getBungalowById(bId);
-        const uObj = getUnitById(bId, uId);
-        syncRowToGoogleSheet('booking', [
-          new Date().toLocaleString(),
-          bObj.name,
-          uObj.name,
-          bookingPayload.officerOffrNo,
-          bookingPayload.officerRank,
-          bookingPayload.officerName,
-          bookingPayload.officerUnit,
-          bookingPayload.checkIn,
-          bookingPayload.checkOut,
-          bookingPayload.contactPhone,
-          bookingPayload.remarks
-        ]);
-
         state.selectedBungalowId = bookingPayload.bungalowId;
         window.selectCalendarDate(bookingPayload.checkIn);
         window.closeModal('bookingModal');
@@ -2082,17 +2007,6 @@
           else state.personnel.push(record);
           renderPersonnelDirectoryTable();
         }
-
-        // Auto-sync officer to Google Sheets if configured
-        syncRowToGoogleSheet('personnel', [
-          new Date().toLocaleString(),
-          offrNo,
-          rank,
-          name,
-          unit,
-          phone
-        ]);
-
         showToast(`Saved ${rank} ${name} to directory!`);
         window.switchPersonnelTab('list');
       } catch (err) {
@@ -2156,101 +2070,104 @@
       }
     };
 
+    window.downloadBookingsCSV = function () {
+      if (!state.isAdmin) return;
+      if (state.bookings.length === 0) {
+        showToast('No bookings available to export.', 'warning');
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Booking ID,Bungalow,Unit/Floor,Officer No,Rank,Name,Unit,Check-In,Check-Out,Contact Phone,Remarks\r\n";
+
+      state.bookings.forEach(bk => {
+        const b = getBungalowById(bk.bungalowId);
+        const u = getUnitById(bk.bungalowId, bk.unitId);
+        const row = [
+          bk.id,
+          `"${b.name.replace(/"/g, '""')}"`,
+          `"${u.name.replace(/"/g, '""')}"`,
+          `"${(bk.officerOffrNo || '').replace(/"/g, '""')}"`,
+          `"${(bk.officerRank || '').replace(/"/g, '""')}"`,
+          `"${(bk.officerName || '').replace(/"/g, '""')}"`,
+          `"${(bk.officerUnit || '').replace(/"/g, '""')}"`,
+          bk.checkIn,
+          bk.checkOut,
+          `"${(bk.contactPhone || '').replace(/"/g, '""')}"`,
+          `"${(bk.remarks || '').replace(/"/g, '""')}"`
+        ];
+        csvContent += row.join(",") + "\r\n";
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `SLSC_Bookings_Report_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Bookings CSV downloaded successfully!');
+    };
+
+    window.downloadPersonnelCSV = function () {
+      if (!state.isAdmin) return;
+      if (state.personnel.length === 0) {
+        showToast('No personnel records available to export.', 'warning');
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Officer No,Rank,Name with Initials & Decorations,Unit,Contact Phone,Notes\r\n";
+
+      state.personnel.forEach(p => {
+        const row = [
+          `"${(p.offrNo || '').replace(/"/g, '""')}"`,
+          `"${(p.rank || '').replace(/"/g, '""')}"`,
+          `"${(p.name || '').replace(/"/g, '""')}"`,
+          `"${(p.unit || '').replace(/"/g, '""')}"`,
+          `"${(p.phone || '').replace(/"/g, '""')}"`,
+          `"${(p.notes || '').replace(/"/g, '""')}"`
+        ];
+        csvContent += row.join(",") + "\r\n";
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `SLSC_Personnel_Directory_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Personnel Directory CSV downloaded successfully!');
+    };
+
     window.openSettingsModal = function () {
       updateSettingsModalLinks();
-      const sheetInput = document.getElementById('googleSheetUrlInput');
-      if (sheetInput) sheetInput.value = state.googleSheetWebhookUrl || '';
       window.openModal('settingsModal');
     };
 
-    window.openGoogleSheetGuideModal = function () {
-      window.openModal('googleSheetGuideModal');
-    };
-
-    window.saveGoogleSheetWebhook = async function (e) {
-      e.preventDefault();
-      const urlVal = document.getElementById('googleSheetUrlInput').value.trim();
-      state.googleSheetWebhookUrl = urlVal;
-
-      try {
-        if (state.db && state.user) {
-          const settingsCol = collection(state.db, 'artifacts', state.appId, 'public', 'data', 'settings');
-          await setDoc(doc(settingsCol, 'adminConfig'), { googleSheetWebhookUrl: urlVal }, { merge: true });
-        }
-        showToast(urlVal ? 'Google Sheet Auto-Sync URL saved!' : 'Google Sheet Auto-Sync disabled.');
-      } catch (err) {
-        console.error('Save webhook error:', err);
-        showToast('Saved locally.', 'warning');
-      }
-    };
-
-    async function syncRowToGoogleSheet(type, rowArray) {
-      if (!state.googleSheetWebhookUrl) return;
-      try {
-        await fetch(state.googleSheetWebhookUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type, row: rowArray })
-        });
-      } catch (err) {
-        console.error('Google Sheet sync failed:', err);
-      }
-    }
-
-    window.exportBookingsToCSV = function () {
-      const headers = ['Bungalow', 'Floor/Unit', 'Offr No', 'Rank', 'Officer Name', 'Unit', 'Check-In', 'Check-Out', 'Phone', 'Remarks'];
-      const rows = state.bookings.map(bk => {
-        const b = getBungalowById(bk.bungalowId);
-        const u = getUnitById(bk.bungalowId, bk.unitId);
-        return [
-          b.name, u.name, bk.officerOffrNo, bk.officerRank, bk.officerName,
-          bk.officerUnit || '', bk.checkIn, bk.checkOut, bk.contactPhone || '', bk.remarks || ''
-        ].map(val => `"${String(val).replace(/"/g, '""')}"`).join(',');
-      });
-      downloadCSV([headers.join(','), ...rows].join('\n'), `SLSC_Bookings_${todayStr}.csv`);
-    };
-
-    window.exportPersonnelToCSV = function () {
-      const headers = ['Offr No', 'Rank', 'Full Name', 'Unit', 'Phone', 'Notes'];
-      const rows = state.personnel.map(p => [
-        p.offrNo, p.rank, p.name, p.unit || '', p.phone || '', p.notes || ''
-      ].map(val => `"${String(val).replace(/"/g, '""')}"`).join(','));
-      downloadCSV([headers.join(','), ...rows].join('\n'), `SLSC_Officers_${todayStr}.csv`);
-    };
-
-    function downloadCSV(csvContent, fileName) {
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      a.click();
-      URL.revokeObjectURL(url);
-      showToast(`Downloaded ${fileName}`);
-    }
-
     window.copyInputText = function (inputId) {
       const el = document.getElementById(inputId);
-      if (!el) return;
       el.select();
+      el.setSelectionRange(0, 99999);
       document.execCommand('copy');
-      showToast('Copied to clipboard!');
+      showToast('Link copied to clipboard!');
     };
 
     window.updateAdminPasscodeSetting = async function (e) {
       e.preventDefault();
-      if (!state.isAdmin) return;
-      const newPass = document.getElementById('newPasscodeInput').value.trim();
-      if (newPass.length < 4) return;
-      state.adminPasscode = newPass;
+      const newCode = document.getElementById('newPasscodeInput').value.trim();
+      if (newCode.length < 4) return;
+
+      state.adminPasscode = newCode;
       updateSettingsModalLinks();
+      document.getElementById('newPasscodeInput').value = '';
+
       try {
         if (state.db && state.user) {
           const settingsCol = collection(state.db, 'artifacts', state.appId, 'public', 'data', 'settings');
-          await setDoc(doc(settingsCol, 'adminConfig'), { passcode: newPass }, { merge: true });
+          await setDoc(doc(settingsCol, 'adminConfig'), { passcode: newCode }, { merge: true });
         }
-        document.getElementById('newPasscodeInput').value = '';
         showToast('Admin passcode updated! Copy your new Magic Link.');
       } catch (err) {
         console.error('Passcode update error:', err);
@@ -2714,16 +2631,10 @@
         const settingsCol = collection(state.db, 'artifacts', state.appId, 'public', 'data', 'settings');
         onSnapshot(settingsCol, (snapshot) => {
           snapshot.forEach(docSnap => {
-            if (docSnap.id === 'adminConfig') {
-              const data = docSnap.data();
-              if (data.passcode) {
-                state.adminPasscode = data.passcode;
-                checkUrlAdminParam();
-                updateSettingsModalLinks();
-              }
-              if (data.googleSheetWebhookUrl !== undefined) {
-                state.googleSheetWebhookUrl = data.googleSheetWebhookUrl;
-              }
+            if (docSnap.id === 'adminConfig' && docSnap.data().passcode) {
+              state.adminPasscode = docSnap.data().passcode;
+              checkUrlAdminParam();
+              updateSettingsModalLinks();
             }
           });
         }, (err) => console.error('Settings sync error:', err));
