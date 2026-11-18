@@ -67,8 +67,8 @@
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
   <!-- TOP REGIMENTAL HEADER -->
-  <header class="bg-gradient-to-r from-slsc-navy via-slsc-blue to-slsc-navy text-white shadow-lg sticky top-0 z-40 border-b-2 border-slsc-gold">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+  <header class="bg-gradient-to-r from-slsc-navy via-slsc-blue to-slsc-navy text-white shadow-lg sticky top-0 z-40 border-b-2 border-slsc-gold w-full">
+    <div class="w-full px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
       <!-- Crest & Title -->
       <div class="flex items-center gap-3.5">
         <div class="w-11 h-11 rounded-xl bg-slsc-gold/15 border border-slsc-gold/50 flex items-center justify-center shrink-0 shadow-inner">
@@ -89,7 +89,7 @@
         </div>
       </div>
 
-      <!-- Mode Indicator & Admin Toggle -->
+      <!-- Mode Indicator & Admin Toggle (Right Aligned) -->
       <div class="flex items-center gap-2.5 ml-auto">
         <div id="modeBadge" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white/10 text-slate-200 border border-white/15 flex items-center gap-1.5">
           <svg class="w-3.5 h-3.5 text-sky-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -109,8 +109,8 @@
     </div>
 
     <!-- PRIMARY 4-TAB NAVIGATION BAR -->
-    <nav class="bg-slsc-navy/95 border-t border-white/10">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
+    <nav class="bg-slsc-navy/95 border-t border-white/10 w-full">
+      <div class="w-full px-4 sm:px-8 flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
         <div class="flex items-center gap-1 sm:gap-2 py-2">
           <button id="mainTabBtn_availability" onclick="switchMainTab('availability')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition flex items-center gap-2 cursor-pointer bg-slsc-gold text-slsc-navy shadow">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -162,13 +162,13 @@
     </nav>
   </header>
 
-  <!-- MAIN CONTENT CONTAINER -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+  <!-- MAIN CONTENT CONTAINER (FULL WIDTH EDGE-TO-EDGE) -->
+  <main class="flex-1 w-full px-4 sm:px-8 py-6">
 
     <!-- =================================================================== -->
     <!-- TAB 1: BUNGALOW AVAILABILITY (FOCUSED SINGLE-BUNGALOW VIEW)         -->
     <!-- =================================================================== -->
-    <div id="tabPanel_availability" class="space-y-5">
+    <div id="tabPanel_availability" class="space-y-5 w-full">
       <!-- Top Control Bar: Bungalow Pill Tabs + Date Picker -->
       <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 space-y-4">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -273,15 +273,15 @@
     <!-- TAB 2: ALL BOOKINGS SCHEDULE (DEDICATED FULL-SCREEN VIEW)           -->
     <!-- =================================================================== -->
     <div id="tabPanel_schedule" class="hidden space-y-5">
-      <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-        <div class="p-5 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden w-full">
+        <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
           <div>
             <h2 class="text-base sm:text-lg font-extrabold text-slsc-navy">All Bookings Schedule & Occupancy Records</h2>
             <p class="text-xs text-slate-500">Complete reservation log across all 6 SLSC bungalows. Filter by bungalow, month, timeframe, or officer.</p>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2.5">
-            <div class="relative flex-1 sm:flex-initial min-w-[210px]">
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative flex-1 sm:flex-initial min-w-[190px]">
               <input type="text" id="scheduleSearchInput" oninput="renderBookingsList()" placeholder="Search officer, unit, offr no..." class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-slsc-blue" />
               <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -306,8 +306,8 @@
           </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left border-collapse min-w-[700px]">
             <thead>
               <tr class="bg-slate-50 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
                 <th class="py-3.5 px-4">Bungalow & Floor / Unit</th>
@@ -573,8 +573,8 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-white border-t border-slate-200 py-4 mt-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+  <footer class="bg-white border-t border-slate-200 py-4 mt-8 w-full">
+    <div class="w-full px-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
       <p class="font-medium text-slate-600">Sri Lanka Signal Corps — Regimental Holiday Bungalow Management</p>
       <p>Real-Time Cloud Synced • Mobile & Desktop Ready</p>
     </div>
@@ -957,7 +957,6 @@
       appId: typeof __app_id !== 'undefined' ? __app_id : 'slsc-bungalows-app'
     };
 
-    // Make state globally accessible to prevent ReferenceErrors in inline HTML handlers
     window.state = state;
 
     // -----------------------------------------------------------------------
@@ -1019,7 +1018,7 @@
     }
 
     // -----------------------------------------------------------------------
-    // 5. GLOBAL ATTACHMENTS (Ensures zero ReferenceErrors on onclick events)
+    // 5. GLOBAL ATTACHMENTS
     // -----------------------------------------------------------------------
     window.selectPersonnelItem = function (person) {
       document.getElementById('selectedPersonnelId').value = person.id || person.docId || '';
